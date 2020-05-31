@@ -8,9 +8,11 @@ const mongoose = require('mongoose');
 
 const makeLogin = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    console.log('user', user);
     if (err) {
-      return next(err);
+      return res.status(404).json({
+        success: false,
+        error: req.error,
+      });
     }
     if (!user) {
       return res.status(401).json({
@@ -52,10 +54,11 @@ router.get('/islogged', isAuth, (req, res, next) => {
     user: req.user,
   });
 });
-router.get('/protected-admin', isAdmin, (req, res, next) => {
+router.get('/protected-next-level', isAdmin, (req, res, next) => {
   return res.status(200).json({
     success: true,
-    user: req.user,
+    description: 'You are a google account. Magic is here ✨',
+    image: 'https://magomagomago.s3-us-west-2.amazonaws.com/admin.png',
   });
 });
 
@@ -72,7 +75,7 @@ router.post(
 
     try {
       let existingUser = await User.findOne({ email: email });
-      console.log('existingUser', existingUser);
+
       if (existingUser) {
         return res.status(422).json({
           success: false,
@@ -86,16 +89,31 @@ router.post(
         hash: saltHash,
         admin: false,
       });
-      console.log('newUser', newUser);
-      let user = await newUser.save();
-      console.log('user', user);
+
+      await newUser.save();
       next();
     } catch (err) {
-      console.log('catch', err);
       return res.status(500).json({ success: false, msg: err });
     }
   },
   makeLogin
+);
+router.post(
+  '/login/google',
+  passport.authenticate('google-token'),
+  async (req, res) => {
+    if (req.error) {
+      return res.status(401).json({
+        success: false,
+        user: null,
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        user: req.user,
+      });
+    }
+  }
 );
 
 module.exports = router;

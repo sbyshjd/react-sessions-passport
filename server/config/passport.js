@@ -38,7 +38,6 @@ module.exports = (passport) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         const { imageUrl, id, ...rest } = profile;
-
         let user = null;
         let error = null;
         try {
@@ -56,7 +55,7 @@ module.exports = (passport) => {
               name: profile.name.givenName,
               providerId: id,
               provider: 'Google',
-              imageUrl,
+              imageUrl: profile._json.picture,
               admin: true,
             });
             let savedUser = await newUser.save();

@@ -14,7 +14,14 @@ const PocFetch = {
       let result = await URL.get('islogged');
       return result.data;
     } catch (error) {
-      console.log(error);
+      return error.response;
+    }
+  },
+  isAdmin: async () => {
+    try {
+      let result = await URL.get('protected-next-level');
+      return result.data;
+    } catch (error) {
       return error.response;
     }
   },

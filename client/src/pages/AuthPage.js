@@ -3,12 +3,12 @@ import { Switch, Route, NavLink, Redirect } from 'react-router-dom';
 import linus from '../images/linus.jpg';
 import Form from '../components/Form';
 import api from '../services/api';
-import useSaveAndRedirect from '../hooks/useSaveRedirect';
-
+import { useHistory } from 'react-router-dom';
 const AuthPage = () => {
+  const history = useHistory();
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [registerData, setRegisterData] = useState({ email: '', password: '' });
-  const saveAndRedirect = useSaveAndRedirect();
+
   const [errorLogin, setErrorLogin] = useState(false);
   const [errorRegister, setErrorRegister] = useState(false);
 
@@ -27,7 +27,7 @@ const AuthPage = () => {
     e.preventDefault();
     try {
       let result = await api.login(loginData);
-      saveAndRedirect(result.data);
+      history.push('/');
     } catch (error) {
       setErrorLogin(true);
     }
@@ -36,7 +36,7 @@ const AuthPage = () => {
     e.preventDefault();
     try {
       let result = await api.create(registerData);
-      saveAndRedirect(result.data);
+      history.push('/');
     } catch (error) {
       setErrorRegister(true);
     }

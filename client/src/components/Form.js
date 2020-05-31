@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai';
 import GoogleLogin from 'react-google-login';
 import { FcGoogle } from 'react-icons/fc';
 import uuid from 'uuid/v4';
-import useSaveAndRedirect from '../hooks/useSaveRedirect';
 import api from '../services/api';
 let inputEmail = uuid();
 let inputPassword = uuid();
 
 const Form = ({ titleBtn, OnSubmit, data, setData, isDisabled, error }) => {
   const [isVisible, setVisibility] = useState(false);
-  const saveAndRedirect = useSaveAndRedirect();
+  const history = useHistory();
 
   const handleGoogleLogin = async (response) => {
     let result = await api.googleLogin(response);
     if (result) {
-      saveAndRedirect(result);
+      history.push('/');
     }
   };
 

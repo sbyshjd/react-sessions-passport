@@ -13,7 +13,7 @@ const AuthorizedRoute = ({ component, ...rest }) => {
     isLogged();
   }, []);
 
-  if (logged === null) return <div>Loading...</div>;
+  if (logged === null) return null;
   if (logged !== true) return <Redirect push to='/auth' />;
   return <Route component={component} {...rest} />;
 };
