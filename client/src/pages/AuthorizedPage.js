@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import api from '../services/api';
 import { useGoogleLogout } from 'react-google-login';
 import { GiMagickTrick } from 'react-icons/gi';
+import {AuthContext} from "../context/auth.context"
 const AuthorizedPage = () => {
+  const {logout} =useContext(AuthContext)
+  const value =useContext(AuthContext)
+  console.log("show me the context in authorized page", value)
   const history = useHistory();
   const [user, setUser] = useState();
   const [sudo, setSudo] = useState(null);
@@ -25,7 +29,7 @@ const AuthorizedPage = () => {
   }, []);
 
   const handleLogout = async () => {
-    await api.logout();
+     await logout()
     signOut();
     history.push('/auth');
   };

@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Switch, Route, NavLink, Redirect } from 'react-router-dom';
 import linus from '../images/linus.jpg';
 import Form from '../components/Form';
 import api from '../services/api';
 import { useHistory } from 'react-router-dom';
+import {AuthContext} from "../context/auth.context"
+
 const AuthPage = () => {
   const history = useHistory();
+  const value =useContext(AuthContext)
+  console.log("show me the context in auth page", value)
+  const {user, makeLogin} = useContext(AuthContext)
+
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [registerData, setRegisterData] = useState({ email: '', password: '' });
 
@@ -26,7 +32,8 @@ const AuthPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      let result = await api.login(loginData);
+       await makeLogin(loginData)
+      // let result = await api.login(loginData);
       history.push('/');
     } catch (error) {
       setErrorLogin(true);
@@ -45,6 +52,7 @@ const AuthPage = () => {
   const isDisabled = (state) => {
     return state.email === '' || state.password === '';
   };
+
   return (
     <div className='w-screen h-screen bg-gray-700'>
       <div className='flex flex-col-reverse sm:flex-row items-center justify-center h-screen overflow-hidden '>
