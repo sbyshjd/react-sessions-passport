@@ -4,10 +4,11 @@ import api from '../services/api';
 import { useGoogleLogout } from 'react-google-login';
 import { GiMagickTrick } from 'react-icons/gi';
 import { AuthContext } from '../context/auth.context';
-
+import Loader from '../components/Loader';
 import { FiCamera } from 'react-icons/fi';
 const AuthorizedPage = () => {
   const { logout } = useContext(AuthContext);
+  const [isLoading, setLoading] = useState(false);
   const history = useHistory();
   const [user, setUser] = useState();
   const [sudo, setSudo] = useState(null);
@@ -58,6 +59,7 @@ const AuthorizedPage = () => {
       <div className='w-3/5 p-2'>
         <div className='flex py-2 '>
           <div className='p-2'>
+            {/* <Loader /> */}
             <img
               className='rounded-full h-16 w-16 bg-gray-300 '
               src={
