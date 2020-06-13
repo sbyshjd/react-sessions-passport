@@ -4,17 +4,16 @@ import linus from '../images/linus.jpg';
 import Form from '../components/Form';
 import api from '../services/api';
 import { useHistory } from 'react-router-dom';
-import {AuthContext} from "../context/auth.context"
+import { AuthContext } from '../context/auth.context';
 
 const AuthPage = () => {
   const history = useHistory();
-  const value =useContext(AuthContext)
-  console.log("show me the context in auth page", value)
-  const {user, makeLogin} = useContext(AuthContext)
+  const value = useContext(AuthContext);
+  console.log('show me the context in auth page', value);
+  const { user, makeLogin } = useContext(AuthContext);
 
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [registerData, setRegisterData] = useState({ email: '', password: '' });
-
   const [errorLogin, setErrorLogin] = useState(false);
   const [errorRegister, setErrorRegister] = useState(false);
 
@@ -32,9 +31,12 @@ const AuthPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-       await makeLogin(loginData)
+      await makeLogin(loginData);
       // let result = await api.login(loginData);
-      history.push('/');
+
+      if (user.success) {
+        history.push('/');
+      }
     } catch (error) {
       setErrorLogin(true);
     }

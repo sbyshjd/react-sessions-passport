@@ -7,6 +7,7 @@ const AuthorizedRoute = ({ component, ...rest }) => {
 
   const isLogged = async () => {
     let result = await api.isLogged();
+    console.log(result);
     setLogged(result.success);
   };
   useEffect(() => {

@@ -5,6 +5,10 @@ const URL = axios.create({
 });
 
 const PocFetch = {
+  changeProfileImage: async (data) => {
+    let response = await URL.patch('profile', data);
+    console.log(response);
+  },
   logout: async () => {
     let response = await URL.get('logout');
     return response;
@@ -26,7 +30,9 @@ const PocFetch = {
     }
   },
   googleLogin: async (response) => {
+    console.log('dentro da função da api service', response);
     const { accessToken } = response;
+    console.log('accessToken', accessToken);
     if (!accessToken) return null;
     const googleresponse = {
       access_token: accessToken,

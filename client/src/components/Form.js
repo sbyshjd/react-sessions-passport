@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai';
 import GoogleLogin from 'react-google-login';
 import { FcGoogle } from 'react-icons/fc';
 import uuid from 'uuid/v4';
-import api from '../services/api';
+import { AuthContext } from '../context/auth.context';
 let inputEmail = uuid();
 let inputPassword = uuid();
 
 const Form = ({ titleBtn, OnSubmit, data, setData, isDisabled, error }) => {
   const [isVisible, setVisibility] = useState(false);
   const history = useHistory();
-
-  const handleGoogleLogin = async (response) => {
-    let result = await api.googleLogin(response);
-    if (result) {
+  const { googleLogin, user } = useContext(AuthContext);
+  useEffect(() => {
+    if (user && user.success) {
       history.push('/');
     }
+  }, [history, user]);
+
+  const handleGoogleLogin = async (response) => {
+    await googleLogin(response);
   };
 
   const ifDisabled = isDisabled();
   return (
     <div className='relative'>
+      {console.log('dentro do jsx', user)}
       {error && (
         <div className='bg-red-200 w-full py-2 flex justify-center items-center absolute text-xs'>
           You have a problem with your email or password

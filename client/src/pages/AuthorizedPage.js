@@ -3,15 +3,14 @@ import { useHistory } from 'react-router-dom';
 import api from '../services/api';
 import { useGoogleLogout } from 'react-google-login';
 import { GiMagickTrick } from 'react-icons/gi';
-import {AuthContext} from "../context/auth.context"
+import { AuthContext } from '../context/auth.context';
+
+import { FiCamera } from 'react-icons/fi';
 const AuthorizedPage = () => {
-  const {logout} =useContext(AuthContext)
-  const value =useContext(AuthContext)
-  console.log("show me the context in authorized page", value)
+  const { logout } = useContext(AuthContext);
   const history = useHistory();
   const [user, setUser] = useState();
   const [sudo, setSudo] = useState(null);
-
   const { signOut } = useGoogleLogout({
     clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
   });
@@ -24,12 +23,20 @@ const AuthorizedPage = () => {
     }
     setUser(user);
   };
+
   useEffect(() => {
     getUser();
   }, []);
 
+  const handleProfileChange = async (event) => {
+    const data = new FormData();
+    data.append('profile', event.target.files[0]);
+    await api.changeProfileImage(data);
+    getUser();
+  };
+
   const handleLogout = async () => {
-     await logout()
+    await logout();
     signOut();
     history.push('/auth');
   };
@@ -50,15 +57,28 @@ const AuthorizedPage = () => {
       )}
       <div className='w-3/5 p-2'>
         <div className='flex py-2 '>
-          {user.imageUrl && (
-            <div className='p-2'>
-              <img
-                className='rounded-full h-16 w-16 bg-gray-300 '
-                src={user.imageUrl}
-                alt='probably yourself'
+          <div className='p-2'>
+            <img
+              className='rounded-full h-16 w-16 bg-gray-300 '
+              src={
+                user.imageUrl
+                  ? user.imageUrl
+                  : 'https://magomagomago.s3-us-west-2.amazonaws.com/unknown.png'
+              }
+              alt='probably yourself'
+            />
+            <label htmlFor='profile'>
+              <FiCamera />
+              <input
+                className='hidden'
+                id='profile'
+                type='file'
+                name='profile'
+                onChange={handleProfileChange}
               />
-            </div>
-          )}
+            </label>
+          </div>
+
           <div className='flex flex-col justify-center pl-2 '>
             <h1>HEY, {user.name ? user.name : user.email}</h1>
             {user.name && <h2>{user.email}</h2>}

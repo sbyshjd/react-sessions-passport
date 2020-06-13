@@ -5,7 +5,36 @@ const { hashPassword, issueJWT } = require('../config/utils');
 const isAuth = require('../authMiddleware').isAuth;
 const isAdmin = require('../authMiddleware').isAdmin;
 const mongoose = require('mongoose');
+const Multer = require('multer');
+const aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
+const s3 = new aws.S3();
 
+const uploader = new Multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'poc-ironhack',
+    acl: 'public-read',
+    key: function (req, files, cb) {
+      cb(null, Date.now().toString());
+    },
+  }),
+}).single('profile');
+
+router.patch('/profile', isAuth, uploader, async (req, res, next) => {
+  console.log(req.file);
+  console.log(req.file.location);
+  console.log(req.user);
+  let user = req.user;
+  // let existingUser = await User.findOne({ id: req.user.id });
+  user.imageUrl = req.file.location;
+  await user.save();
+  console.log(user);
+  return res.status(200).json({
+    success: true,
+    user,
+  });
+});
 const makeLogin = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
